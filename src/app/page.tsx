@@ -40,23 +40,29 @@ export default function PrelaunchPage() {
     e.preventDefault();
 
     try {
+      // 1. Add user to Firestore collection
       await addDoc(collection(db, "prelaunch_signups"), {
         ...form,
         timestamp: serverTimestamp(),
       });
 
-      // 🔔 Send confirmation email
+      // 2. Send confirmation email via your custom API
       await fetch("/api/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          email: form.email,
+          firstName: form.firstName,
+        }),
       });
 
+      // 3. Show confirmation message
       setSubmitted(true);
     } catch (err) {
       console.error("Firestore write or email failed:", err);
     }
   };
+
 
 
   return (
