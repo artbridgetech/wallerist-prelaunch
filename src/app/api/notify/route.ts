@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   const { email, firstName } = await req.json();
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: "Wallerist <noreply@wallerist.com>",
       to: [email],
       subject: "Welcome to Wallerist 🎉",
