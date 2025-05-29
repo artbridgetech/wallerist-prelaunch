@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import fs from "fs";
-import path from "path";
-
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -13,14 +10,15 @@ export async function POST(req: Request) {
     const data = await resend.emails.send({
       from: 'Wallerist <noreply@wallerist.com>',
       to: email,
-      subject: '🎉 Welcome to Wallerist!',
+      subject: 'Welcome to Wallerist!',
       html: `
-        <div style="font-family:sans-serif; max-width:600px; margin:auto;">
+        <div style="font-family:sans-serif; max-width:600px; margin:auto; padding:20px;">
           <h1 style="color:#111;">Hi ${firstName || 'there'},</h1>
           <p>Thanks for joining the Wallerist prelaunch list!</p>
-          <p>We're excited to have you on board. Stay tuned for exclusive access and exciting updates.</p>
-          <p>Meanwhile, you can read more about our vision in the attached PDF.</p>
-          <p>— The Wallerist Team</p>
+          <p>You're officially on our early access list. We’ll keep you updated with all the latest news and let you know as soon as we launch.</p>
+          <br/>
+          <p style="margin-top:40px;">Warmly,</p>
+          <p style="font-weight:bold; color:#333;">The Wallerist Team</p>
         </div>
       `,
       headers: {
@@ -29,12 +27,6 @@ export async function POST(req: Request) {
       tags: [
         { name: "type", value: "welcome" },
         { name: "campaign", value: "prelaunch" }
-      ],
-      attachments: [
-        {
-          filename: "Welcome.pdf",
-          content: await getWelcomePdfBase64(), // defined below
-        }
       ]
     });
 
@@ -43,13 +35,4 @@ export async function POST(req: Request) {
     console.error("Email send failed:", error);
     return NextResponse.json({ success: false, error });
   }
-}
-
-// Helper function to get base64 content of your PDF
-async function getWelcomePdfBase64() {
-  const fs = require("fs/promises");
-  const path = require("path");
-  const pdfPath = path.resolve(process.cwd(), "public", "Welcome.pdf");
-  const buffer = await fs.readFile(pdfPath);
-  return buffer.toString("base64");
 }
