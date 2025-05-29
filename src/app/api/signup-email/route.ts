@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { NextResponse } from "next/server";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -7,18 +7,23 @@ export async function POST(req: Request) {
   const { email, firstName } = await req.json();
 
   try {
-    const data = await resend.emails.send({
-      from: 'Wallerist <noreply@wallerist.com>',
-      to: email,
-      subject: 'Welcome to Wallerist!',
+    const { error } = await resend.emails.send({
+      from: "Wallerist <noreply@wallerist.com>",
+      to: [email],
+      subject: "Welcome to Wallerist 🎉",
       html: `
-        <div style="font-family:sans-serif; max-width:600px; margin:auto; padding:20px;">
-          <h1 style="color:#111;">Hi ${firstName || 'there'},</h1>
-          <p>Thanks for joining the Wallerist prelaunch list!</p>
-          <p>You're officially on our early access list. We’ll keep you updated with all the latest news and let you know as soon as we launch.</p>
-          <br/>
-          <p style="margin-top:40px;">Warmly,</p>
-          <p style="font-weight:bold; color:#333;">The Wallerist Team</p>
+        <div style="font-family: Arial, sans-serif; color: #111; max-width: 600px; margin: auto; padding: 20px;">
+          <h1 style="color: #000;">Welcome to <span style="color:#6b46c1;">Wallerist</span>, ${firstName || "there"}!</h1>
+          <p style="font-size: 16px; line-height: 1.6;">
+            Thanks for signing up to be among the first to join our art-powered community. You're now officially on our early access list.
+          </p>
+          <p style="font-size: 16px; line-height: 1.6;">
+            We’re crafting something inspiring. Until then, keep an eye on your inbox — we’ll keep you posted.
+          </p>
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;" />
+          <p style="font-size: 14px; color: #555;">Warmly,</p>
+          <p style="font-size: 14px; font-weight: bold; color: #333;">The Wallerist Team</p>
+          <p style="font-size: 12px; color: #999; margin-top: 30px;">Wallerist – Empowering artists, transforming spaces.</p>
         </div>
       `,
       headers: {
@@ -30,9 +35,14 @@ export async function POST(req: Request) {
       ]
     });
 
-    return NextResponse.json({ success: true, data });
-  } catch (error) {
-    console.error("Email send failed:", error);
-    return NextResponse.json({ success: false, error });
+    if (error) {
+      console.error("Resend error:", error);
+      return NextResponse.json({ error }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
