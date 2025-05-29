@@ -38,16 +38,26 @@ export default function PrelaunchPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       await addDoc(collection(db, "prelaunch_signups"), {
         ...form,
         timestamp: serverTimestamp(),
       });
+
+      // 🔔 Send confirmation email
+      await fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
       setSubmitted(true);
     } catch (err) {
-      console.error("Firestore write failed:", err);
+      console.error("Firestore write or email failed:", err);
     }
   };
+
 
   return (
     <div className="relative min-h-screen text-gray-900">
