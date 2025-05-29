@@ -12,7 +12,8 @@
     "firebase": "^11.8.1",
     "next": "15.3.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "resend": "^4.5.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
