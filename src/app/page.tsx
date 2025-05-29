@@ -47,7 +47,7 @@ export default function PrelaunchPage() {
       });
 
       // 2. Send confirmation email via your custom API
-      await fetch("/api/notify", {
+      await fetch("/api/signup-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
