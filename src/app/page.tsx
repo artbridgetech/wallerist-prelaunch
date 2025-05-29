@@ -104,7 +104,7 @@ export default function PrelaunchPage() {
 
           {submitted ? (
             <p className="text-center text-lg font-semibold text-green-600">
-              🎉 Thank you! We’ll keep you posted.
+              Thank you! We’ll keep you posted.
             </p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
